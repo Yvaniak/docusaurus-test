@@ -2,16 +2,16 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    devenvs.url = "github:yvaniak/devenvs";
-    devenvs.inputs.nixpkgs.follows = "nixpkgs";
+    mydevenvs.url = "github:yvaniak/mydevenvs";
+    mydevenvs.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
-        inputs.devenvs.flakeModule
-        inputs.devenvs.devenv
+        inputs.mydevenvs.flakeModule
+        inputs.mydevenvs.devenv
       ];
       systems = [
         "x86_64-linux"
@@ -19,24 +19,33 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
-      perSystem = _: {
-        devenv.shells.default = {
-          devenvs = {
-            nix = {
-              enable = true;
-              flake.enable = true;
-            };
-            ts.enable = true;
-            ts.biome.enable = true;
-            tools.just.enable = true;
-            tools.just.pre-commit.enable = true;
-          };
+      perSystem =
+        { pkgs, config, ... }:
+        {
+          packages.default = pkgs.callPackage ./default.nix { };
 
-          enterShell = ''
-            echo "shell for example project"
-          '';
+          devenv.shells.default = {
+            mydevenvs = {
+              nix = {
+                enable = true;
+                flake.enable = true;
+                check.enable = true;
+                check.package = config.packages.default;
+              };
+              ts.enable = true;
+              ts.biome.enable = true;
+              tools.just = {
+                enable = true;
+                pre-commit.enable = true;
+                check.enable = true;
+              };
+            };
+
+            enterShell = ''
+              echo "shell for example project"
+            '';
+          };
         };
-      };
       flake = {
       };
     };
