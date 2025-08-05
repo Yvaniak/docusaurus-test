@@ -32,8 +32,11 @@
                 check.enable = true;
                 check.package = config.packages.default;
               };
-              ts.enable = true;
-              ts.biome.enable = true;
+              ts = {
+                enable = true;
+                biome.enable = true;
+                script-lint.enable = false;
+              };
               tools.just = {
                 enable = true;
                 pre-commit.enable = true;
