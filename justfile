@@ -10,11 +10,17 @@ alias r := run
 run:
     npm start
 
-alias p := pre-commit-all
+alias pa := pre-commit-all
 
 # launch all the pre-commit hooks on all the files
 pre-commit-all:
     pre-commit run --all-files
+
+alias p := pre-commit
+
+# launch all the pre-commit hooks
+pre-commit:
+    pre-commit run
 
 alias br := build-release
 
@@ -28,9 +34,21 @@ alias nc := nix-checks
 nix-checks:
     if nix --version; then     nix flake check --no-pure-eval --extra-experimental-features flakes --extra-experimental-features nix-command;  else     echo nix is not available, so the nix checks are skipped;   fi
 
+alias uc := upgrade-check
+
+# check if the dependencies need updates
+upgrade-check:
+    npm outdated
+
+alias u := upgrade
+
+# upgrade the dependencies
+upgrade:
+    npm upgrade
+
 alias a := all
 
-# launch all the steps
+# launch all the steps that involves checks
 all: pre-commit-all build-release nix-checks
 
 alias w := watch
