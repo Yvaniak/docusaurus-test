@@ -61,7 +61,7 @@ export default function HomepageFeatures(): ReactNode {
 		<section className={styles.features}>
 			<div className="container">
 				<div className="row">
-					{FeatureList.map((props, idx) => (
+					{FeatureList.map((props, _idx) => (
 						<Feature key={props.title} {...props} />
 					))}
 				</div>
